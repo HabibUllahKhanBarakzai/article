@@ -1,0 +1,55 @@
+version: "2"
+
+services:
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=purelogics
+      - POSTGRESS_PASSWORD=purelogics
+    ports:
+    - "5432:5432"
+
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+
+    restart: unless-stopped
+    volumes:
+    - .:/code
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+    - "8000:8000"
+
+  redis:
+    image: library/redis:5.0-alpine
+    restart: unless-stopped
+    ports:
+    - "6379:6379"
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: celery -A app worker --app=app.celeryconf.celery_app --loglevel=DEBUG
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - redis
+      - web
+
+  beat:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: celery -A app beat --app=app.celeryconf.celery_app --loglevel=DEBUG
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - redis
+      - web
+      - celery
