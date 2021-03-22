@@ -47,3 +47,6 @@ All the Five services Postgres, Web, Celery Worker, Celery Beat and Redis are co
 <br><br>
 
 The cronjob will run every five seconds and chec fo open articles with google doc link and mark them in review.
+
+
+SSH link is also added
