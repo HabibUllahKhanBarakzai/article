@@ -5,9 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models import Q, Value
 from django.utils import timezone
 
 from . import UserTypes

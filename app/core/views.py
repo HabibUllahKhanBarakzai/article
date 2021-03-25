@@ -1,4 +1,3 @@
-
 from typing import Dict
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,7 +13,7 @@ class BaseRegisterView(APIView):
     def create_type(cls, user: User):
         """OverRide this method to either create Writer or Editor based
             on api, or use case"""
-        pass
+        raise NotImplemented("create_type method must be overridden")
 
     @classmethod
     def create_serialized_user_object(cls, user: User) -> Dict:
@@ -23,6 +22,7 @@ class BaseRegisterView(APIView):
 
     def post(self, request, *args, **kwargs):
         """Create the base User"""
+        print("bloody email is", request.data)
         user = User.objects.create_user(**request.data)
         self.create_type(user)
         data = self.create_serialized_user_object(user)
